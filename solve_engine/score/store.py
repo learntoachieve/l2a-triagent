@@ -52,6 +52,20 @@ def select_unscored(
     return [(row[0], row[1], row[2], row[3]) for row in rows]
 
 
+def count_unscored(
+    conn: psycopg.Connection[tuple[Any, ...]], *, prompt_version: str
+) -> int:
+    """How many issues have no score at ``prompt_version`` (the backlog size)."""
+    row = conn.execute(
+        "SELECT count(*) FROM issue i WHERE NOT EXISTS ("
+        "SELECT 1 FROM score s WHERE s.issue_key = i.key "
+        "AND s.prompt_version = %(prompt_version)s)",
+        {"prompt_version": prompt_version},
+    ).fetchone()
+    assert row is not None
+    return int(row[0])
+
+
 def insert_score(conn: psycopg.Connection[tuple[Any, ...]], score: Score) -> None:
     """Write one Score row. Called per issue so a mid-run failure loses nothing."""
     conn.execute(

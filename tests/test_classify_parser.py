@@ -11,7 +11,7 @@ from solve_engine.classify.classifier import (
     build_prompt,
     parse_classification,
 )
-from solve_engine.classify.llm import _invoke
+from solve_engine.classify.llm import invoke
 
 CLEAN = '{"type": "bug", "difficulty": "easy", "solvability": 0.8, ' '"skill_fit": 0.6, "rationale": "clear repro"}'
 
@@ -129,29 +129,31 @@ class _FakeResponse:
 
 def test_invoke_returns_content() -> None:
     chat = _FakeChat(content=CLEAN)
-    assert _invoke(chat, "prompt") == CLEAN
+    outcome = invoke(chat, "prompt")
+    assert outcome.text == CLEAN
+    assert outcome.reason == "ok"
     assert chat.calls == 1
 
 
-def test_invoke_daily_quota_fails_fast() -> None:
+def test_invoke_classifies_daily_quota() -> None:
     chat = _FakeChat(error=RuntimeError("429 RequestsPerDay quota exceeded"))
-    sleeps: list[float] = []
-    assert _invoke(chat, "prompt", sleep=sleeps.append) == None  # noqa: E711
-    assert chat.calls == 1  # no retries on a per-day quota
-    assert sleeps == []
+    outcome = invoke(chat, "prompt")
+    assert outcome.text is None
+    assert outcome.reason == "daily_quota"
+    assert chat.calls == 1  # single attempt; policy lives in the caller
 
 
-def test_invoke_rate_limit_retries_then_gives_up() -> None:
+def test_invoke_classifies_per_minute_rate_limit() -> None:
     chat = _FakeChat(error=RuntimeError("429 RESOURCE_EXHAUSTED per-minute"))
-    sleeps: list[float] = []
-    assert _invoke(chat, "prompt", max_retries=3, sleep=sleeps.append) is None
-    assert chat.calls == 4  # initial try + 3 retries
-    assert sleeps == [2.0, 4.0, 8.0]  # exponential backoff
-
-
-def test_invoke_other_error_returns_none_without_retry() -> None:
-    chat = _FakeChat(error=ValueError("malformed request"))
-    sleeps: list[float] = []
-    assert _invoke(chat, "prompt", sleep=sleeps.append) is None
+    outcome = invoke(chat, "prompt")
+    assert outcome.text is None
+    assert outcome.reason == "rate_limit"
     assert chat.calls == 1
-    assert sleeps == []
+
+
+def test_invoke_classifies_other_error() -> None:
+    chat = _FakeChat(error=ValueError("malformed request"))
+    outcome = invoke(chat, "prompt")
+    assert outcome.text is None
+    assert outcome.reason == "error"
+    assert chat.calls == 1
