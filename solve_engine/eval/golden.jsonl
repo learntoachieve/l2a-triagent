@@ -1,0 +1,41 @@
+# Solve Engine - GOLDEN SET (human ground truth for evaluation)
+#
+# Fill each row BY HAND using YOUR OWN judgment after reading the issue.
+# NEVER copy the model's prediction. The harness joins model predictions from the
+# DB at eval time, so this file must stay free of model output - that is what keeps
+# the evaluation honest instead of circular.
+#
+# Fields to fill per row:
+#   human_type        one of: bug | feature | docs | other
+#   human_difficulty  one of: easy | medium | hard
+#   human_solvable    one of: yes | no
+#                     (could a junior-to-mid Python/data contributor realistically
+#                      take this to a MERGED PR?)
+#   note              optional free text
+#
+# Rows still set to "TODO" (or any invalid value) are SKIPPED by the harness, so
+# you can label incrementally. The 3 rows marked SEED below are pre-filled examples.
+
+{"key": "GustaFranz/easyansi#1", "title": "docs: gravar GIFs de uso real para a README", "repo": "GustaFranz/easyansi", "human_type": "docs", "human_difficulty": "easy", "human_solvable": "yes", "note": "SEED (hand-labeled): title = record usage GIFs for the README -> docs; small/concrete -> easy; anyone can do it -> yes."}
+{"key": "GustaFranz/easyansi#2", "title": "docs: testar EasyAnsi em diferentes terminais e sistemas", "repo": "GustaFranz/easyansi", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "KrakenNet/stargraph#135", "title": "Add unit tests for CLI input-parsing helpers (parse_inputs / _coerce)", "repo": "KrakenNet/stargraph", "human_type": "other", "human_difficulty": "easy", "human_solvable": "yes", "note": "SEED (hand-labeled): adding unit tests is maintenance, not a defect or user feature -> other; well-scoped Python -> easy; junior-friendly -> yes."}
+{"key": "Metabuilder-Labs/tokenjam#303", "title": "[Lens] Traces window selector missing 30d/90d options (blank when URL has since=30d)", "repo": "Metabuilder-Labs/tokenjam", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#13082", "title": "[Feature] Should dbt Core v2 (main) commit generated JSON schemas for artifacts in-repo?", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15141", "title": "[Bug] Non-deterministic dbt-antlr panic", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15235", "title": "[fusion-stable] on-run-end hooks iterating over results object are 4–7x slower than dbt latest, causing 10-minute inactivity timeout for dbt_artifacts users", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15250", "title": "[v2 Bug] Fusion rejects Databricks delete+insert incremental strategy as invalid", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15265", "title": "[EPIC] Expand DuckDB Iceberg REST catalog support", "repo": "dbt-labs/dbt-core", "human_type": "feature", "human_difficulty": "hard", "human_solvable": "no", "note": "SEED (hand-labeled): [EPIC] expand catalog support -> feature; an umbrella epic is large/architectural -> hard; not one junior PR -> no."}
+{"key": "dbt-labs/dbt-core#15266", "title": "Support Cloudflare R2 Data Catalog (DuckDB Iceberg REST)", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15280", "title": "[v2 Bug] @ graph operator returns an empty set for leaf nodes", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15294", "title": "[Bug] dbt 1.12: inline semantic model on a versioned model (columns under versions[].columns) is silently dropped", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15296", "title": "[Bug] Fusion: macro nodes in manifest.json have empty depends_on.macros (regression from 1.x)", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15301", "title": "[1.x Bug] UDF references always resolve to the deferred environment under --defer", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15320", "title": "[v2 Bug] `UnnecessaryQuoting (dbt0118)]` diverges from sqlfluff's safe default for RF06", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "dbt-labs/dbt-core#15327", "title": "[v2 Bug] dbt lint raises SyntaxInvalid (dbt0101) on valid BigQuery ML.PREDICT(MODEL ...) TVFs", "repo": "dbt-labs/dbt-core", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "duckdb/duckdb#23322", "title": "[encodings] shift_jis parser flags valid JIS X 0208 bytes as invalid on CREATE TABLE AS SELECT (large CSV)", "repo": "duckdb/duckdb", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "duckdb/duckdb#23335", "title": "Respect official AWS params", "repo": "duckdb/duckdb", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "nekko-lab/terrakko#25", "title": "VM Create機能の追加", "repo": "nekko-lab/terrakko", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "pandas-dev/pandas#66009", "title": "BUG: Series.combine_first incorrectly handles duplicate indices instead of raising ValueError", "repo": "pandas-dev/pandas", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "shayanghad0/Issus-Create#185", "title": "Hagh Null", "repo": "shayanghad0/Issus-Create", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "siege-analytics/ellington-web#260", "title": "Doc-grep drift test — read engine-rules-firing-spec.md, assert §10 field names appear", "repo": "siege-analytics/ellington-web", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
+{"key": "sneakers-the-rat/ImportantCode#104", "title": "[Bounty: 4.20BTC] Build the security control plane", "repo": "sneakers-the-rat/ImportantCode", "human_type": "TODO", "human_difficulty": "TODO", "human_solvable": "TODO", "note": ""}
