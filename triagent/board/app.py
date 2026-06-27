@@ -15,44 +15,17 @@ from typing import Any
 import streamlit as st
 
 from triagent.db.connection import get_connection
-
-_COLUMNS = [
-    "repo",
-    "number",
-    "title",
-    "html_url",
-    "state",
-    "labels",
-    "source",
-    "last_seen",
-    "solvability",
-    "skill_fit",
-    "difficulty",
-    "issue_type",
-]
-
-# Each issue joined to its single latest score (by scored_at). Issues with no
-# score yield NULL score columns. Highest solvability first; unscored last.
-_LOAD_SQL = """
-SELECT i.repo, i.number, i.title, i.html_url, i.state, i.labels, i.source, i.last_seen,
-       s.solvability, s.skill_fit, s.difficulty, s.issue_type
-FROM issue i
-LEFT JOIN LATERAL (
-    SELECT solvability, skill_fit, difficulty, issue_type
-    FROM score
-    WHERE issue_key = i.key
-    ORDER BY scored_at DESC
-    LIMIT 1
-) s ON true
-ORDER BY s.solvability DESC NULLS LAST, i.last_seen DESC
-"""
+from triagent.db.queries import load_ranked_issues
 
 
 def load_issues() -> list[dict[str, Any]]:
-    """Read all stored issues joined to their latest score, most solvable first."""
+    """Read all stored issues joined to their latest score, most solvable first.
+
+    Thin wrapper over the shared ranked-queue query so the board and the serve
+    API show identical data.
+    """
     with get_connection() as conn:
-        rows = conn.execute(_LOAD_SQL).fetchall()
-    return [dict(zip(_COLUMNS, row, strict=True)) for row in rows]
+        return load_ranked_issues(conn)
 
 
 def _render() -> None:

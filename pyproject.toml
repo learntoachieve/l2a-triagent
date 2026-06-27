@@ -14,6 +14,8 @@ dependencies = [
     "python-dotenv",
     "httpx",
     "streamlit",
+    "fastapi",
+    "uvicorn[standard]",
     "langchain-google-genai",
     "langgraph==1.2.6",
     "langgraph-checkpoint-postgres==3.1.0",

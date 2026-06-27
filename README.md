@@ -22,6 +22,25 @@ mypy .
 pytest -q
 ```
 
+## Run the web app
+
+The serve layer is a single FastAPI process that exposes the ranked queue as a read-only JSON API
+**and** serves a custom web frontend (plain HTML/CSS/JS — no build step). One command runs both:
+
+```powershell
+uvicorn triagent.api.app:app --reload
+```
+
+Then open **http://localhost:8000** for the UI, while the API is available at the same origin:
+
+- `GET /api/health` → `{"status": "ok"}`
+- `GET /api/issues` → the ranked queue (filters: `min_solvability`, `difficulty`, `repo`, `q`, `limit`)
+- `GET /api/issues/{owner}/{repo}/{number}` → one issue's full detail (with rationale + body)
+
+The frontend reads the same data as the Streamlit board (shared ranking query) and calls the API via
+relative URLs, so it works unchanged locally or when deployed. It's a read-only view — no scoring or
+DB writes happen here.
+
 ## Project layout (target)
 
 The structure below is the intended end state. Most directories do not exist yet — each is built in
@@ -38,6 +57,7 @@ triagent/
   eval/          # golden set + metrics harness           [P3]
   agent/         # LangGraph triage core                  [P4]
   api/           # FastAPI read layer                     [P5]
+  web/           # custom static frontend (HTML/CSS/JS)   [P5]
   board/         # Streamlit ticket queue UI              [P5]
 config.toml
 tests/
