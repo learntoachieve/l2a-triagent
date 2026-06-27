@@ -1,0 +1,20 @@
+# Render Blueprint (Infrastructure-as-Code) for the Triagent serve layer.
+#
+# Deploys the FastAPI app (read-only JSON API + static frontend) as a single
+# free web service. Install comes straight from pyproject.toml, so there is one
+# source of truth for dependencies (no requirements.txt to drift).
+#
+# DATABASE_URL is marked sync:false: Render prompts for it in the dashboard and
+# never reads it from this file — secrets are never committed. The app needs no
+# Gemini key here; this layer only READS already-scored data from Postgres.
+services:
+  - type: web
+    name: l2a-triagent
+    env: python
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: uvicorn triagent.api.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
