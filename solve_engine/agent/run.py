@@ -132,6 +132,8 @@ def main(argv: list[str] | None = None) -> None:
         sys.stdout.reconfigure(encoding="utf-8")
 
     args = _parse_args(argv)
+    get_settings()  # loads .env so GEMINI_API_KEY is available to _chat()
+
     chat = _chat()
     run_agent(lambda prompt: invoke(chat, prompt), limit=args.limit, sleep_s=args.sleep)
 

@@ -8,8 +8,12 @@ end-to-end against the mock to prove the conditional verify branch.
 
 from __future__ import annotations
 
+import os
+
+import pytest
 from langgraph.checkpoint.memory import MemorySaver
 
+import solve_engine.agent.run as agent_run
 from solve_engine.agent.graph import (
     VERIFY_THRESHOLD,
     AgentState,
@@ -163,3 +167,31 @@ def test_triage_quota_surfaces_reason_and_falls_back() -> None:
     assert final["triage_reason"] == "daily_quota"
     # fallback() -> solvability 0.0 -> would route to verify, which also fails open.
     assert final["issue_type"] == "other"
+
+
+# --- entrypoint loads .env before building the chat client -----------------
+
+
+def test_main_loads_env_before_chat(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The agent entrypoint must load .env (via get_settings) before _chat()
+    reads GEMINI_API_KEY — regression test for the missing-key startup bug."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
+    # Stand in for load_dotenv populating the environment from a .env file.
+    def fake_get_settings() -> object:
+        os.environ["GEMINI_API_KEY"] = "test-key-from-dotenv"
+        return object()
+
+    seen_key: dict[str, str | None] = {}
+
+    def fake_chat() -> object:
+        seen_key["value"] = os.environ.get("GEMINI_API_KEY")
+        return object()
+
+    monkeypatch.setattr(agent_run, "get_settings", fake_get_settings)
+    monkeypatch.setattr(agent_run, "_chat", fake_chat)
+    monkeypatch.setattr(agent_run, "run_agent", lambda *a, **k: None)
+
+    agent_run.main(["--limit", "1"])
+
+    assert seen_key["value"] == "test-key-from-dotenv"
